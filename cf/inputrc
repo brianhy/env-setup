@@ -1,0 +1,9 @@
+# Turn ON case insensitive tab completion
+set completion-ignore-case on
+
+# Set bell (sound when readline wants to play bell, like <tab> on file name)
+set bell-style none
+
+# Allow ctrl + left|right arrow skip words
+"\e[1;5C": forward-word   # ctrl + right
+"\e[1;5D": backward-word  # ctrl + left 

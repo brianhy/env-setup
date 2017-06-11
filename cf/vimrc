@@ -1,0 +1,88 @@
+" set leader key to space so that you can hit it with both thumbs
+let mapleader=" "
+
+" Use VIM settings rather than VI settings
+" Must be first b/c it changes other options as sidee-effect
+set nocompatible
+
+filetype off
+
+"
+" Plug-ins
+"
+
+" Vim-Plug Initialization
+call plug#begin('~/.vim/bundle')
+
+" VIM EasyMotion Plug-in for faster navigation.
+" GitHub project
+Plug 'easymotion/vim-easymotion'
+
+" VIM html/xml completion
+" GitHub project
+Plug 'tpope/vim-ragtag'
+
+" VIM auto-close of braces, parens, etc.
+Plug 'Raimondi/delimitMate'
+
+call plug#end()
+
+"
+" End Plug-ins
+"
+
+" Turn on syntax
+syntax on
+
+" Force loading indent plugin for recognized filetypes 
+filetype indent plugin on
+
+" Indentation
+set autoindent
+set expandtab " Turn tabs into spaces
+set tabstop=4
+let &shiftwidth=&tabstop
+
+" keep 50 lines of cmd history
+set history=50 
+
+" Turn on column/row indicator at bottom at all times
+set ruler
+
+" Display incomplete commands
+set showcmd
+
+" Turn on incremenal search
+set incsearch
+set hlsearch
+
+" Turn on line numbers on left side
+set number
+
+" Turn on whitespace chars
+set listchars=tab:>-,trail:~,extends:>,precedes:<
+set list
+
+"
+" Setup color scheme
+"
+colorscheme peachpuff
+" Couple slight modifications
+hi Comment ctermfg=Blue cterm=bold guifg=Blue gui=bold
+
+" Setup statusline
+set laststatus=2
+set statusline+=[%l,\ %c]\ <0x%B>%=%F
+
+"
+" Edit mode key mappings
+"
+" ctrl+l   :  If in insert mode, go to end of line and continue editing
+imap <C-e> <Esc>A
+
+"
+" EasyMotion Key Mappings
+"
+" move to Word
+map <Leader>w <Plug>(easymotion-bd-w)
+map <Leader>e <Plug>(easymotion-bd-e)
