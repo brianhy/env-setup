@@ -21,13 +21,13 @@ function c() {
 		echo "Help text for $(basename ${BASH_SOURCE}) [${BASH_SOURCE}]"
 		echo ""
 		echo "wud   - /mnt/c/Users/bghya/Documents"
-		echo "mte   - /mnt/c/Users/bghya/git/mnist-tf-exploration"
-		echo "ndl   - /mnt/c/Users/bghya/git/neural-networks-and-deep-learning"
-		echo "ts    - /mnt/c/Users/bghya/git/titanic-survivor"
-		echo "ngex  - /mnt/c/Users/bghya/git/AngularExploration"
-		echo "um    - /mnt/c/Users/bghya/git/umbelmania"
-		echo "mws   - /mnt/c/Users/bghya/git/mnist-web-service"
-		echo "es    - /mnt/c/Users/bghya/git/env-setup"
+		echo "mte   - $GITDIR/mnist-tf-exploration"
+		echo "ndl   - $GITDIR/neural-networks-and-deep-learning"
+		echo "ts    - $GITDIR/titanic-survivor"
+		echo "ngex  - $GITDIR/AngularExploration"
+		echo "um    - $GITDIR/umbelmania"
+		echo "mws   - $GITDIR/mnist-web-service"
+		echo "es    - $GITDIR/env-setup"
 		echo ""
 		echo "v-ft  - /usr/share/vim/vim74/ftplugin"
 		echo ""
@@ -44,25 +44,25 @@ function c() {
 		cd /mnt/c/Users/bghya/Documents
 	elif [ "$1" = "mte" ]
 	then
-		cd /mnt/c/Users/bghya/git/mnist-tf-exploration
+		cd $GITDIR/mnist-tf-exploration
 	elif [ "$1" = "ndl" ]
 	then
-		cd /mnt/c/Users/bghya/git/neural-networks-and-deep-learning
+		cd $GITDIR/neural-networks-and-deep-learning
 	elif [ "$1" = "ts" ]
 	then
-		cd /mnt/c/Users/bghya/git/titanic-survivor
+		cd $GITDIR/titanic-survivor
 	elif [ "$1" = "ngex" ]
 	then
-		cd /mnt/c/Users/bghya/git/AngularExploration
+		cd $GITDIR/AngularExploration
 	elif [ "$1" = "um" ]
 	then
-		cd /mnt/c/Users/bghya/git/umbelmania
+		cd $GITDIR/umbelmania
 	elif [ "$1" = "mws" ]
 	then
-		cd /mnt/c/Users/bghya/git/mnist-web-service
+		cd $GITDIR/mnist-web-service
 	elif [ "$1" = "es" ]
 	then
-		cd /mnt/c/Users/bghya/git/env-setup
+		cd $GITDIR/env-setup
 	elif [ "$1" = "v-ft" ]
 	then
 		cd /usr/share/vim/vim74/ftplugin
