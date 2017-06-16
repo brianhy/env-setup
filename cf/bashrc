@@ -114,3 +114,4 @@ fi
 # Update environment variables
 export PS1='\n\[\e[1;33m\][\D{%T %b %d}]\[\e[1;37m\] \u@\h\n\w $ \n'
 export PATH=~/bin:$PATH
+export INPUTRC=$GITDIR/env-setup/cf/inputrc # Point readline settings file to one in env-setup
