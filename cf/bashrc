@@ -109,7 +109,7 @@ if ! shopt -oq posix; then
 fi
 
 # Source Shell Functions
-. ~/bin/sfunc/c.sh
+. $GITDIR/env-setup/scr/c.sh
 
 # Update environment variables
 export PS1='\n\[\e[1;33m\][\D{%T %b %d}]\[\e[1;37m\] \u@\h\n\w $ \n'
