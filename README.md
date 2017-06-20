@@ -10,6 +10,11 @@ _~/.bashrc should look something like this_
   #
   . "$GITDIR/env-setup/cf/bashrc"
 ```
+## .bash_profile
+_~/.bash_profile should look something like this_
+```
+[[ -r ~/.bashrc ]] && . ~/.bashrc
+```
 ## .vimrc
 _~/.vimrc should look something like this_
 ```
