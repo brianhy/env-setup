@@ -1,6 +1,7 @@
 # env-setup
 ## .bashrc
 _~/.bashrc should look something like this_
+Be aware, that your bash may only load .bash_profile.
 ```
   # Setup GITDIR var
   export GITDIR=/mnt/c/Users/bghya/git
