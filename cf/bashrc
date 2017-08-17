@@ -114,4 +114,4 @@ export PATH=~/bin:$PATH
 export INPUTRC=$GITDIR/env-setup/cf/inputrc # Point readline settings file to one in env-setup
 
 # Source any files that can run on all systems
-. $GITDIR/env-setup/scr/prompt_title.sh
+. $GITDIR/env-setup/scr/mod_prompt_title.sh
