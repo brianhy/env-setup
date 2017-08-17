@@ -75,6 +75,17 @@ set laststatus=2
 set statusline+=[%l,\ %c]\ <0x%B>%=%F
 
 "
+" Setup vars to set vim window title and reset it after vim closes
+"
+" These t_*  settings are required for reseting the terminal window title.
+" Not sure how they work.
+let &t_ti .= "\e[22;0t"
+let &t_te .= "\e[23;0t"
+" On BufEnter, update the title based on the new buffer
+auto BufEnter * :set title | let &titlestring = expand('%:t') . ' - ' . expand('%:p:h') . ' [' . hostname() . ']'
+
+
+"
 " Edit mode key mappings
 "
 " ctrl+l   :  If in insert mode, go to end of line and continue editing
