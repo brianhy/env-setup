@@ -15,6 +15,9 @@ handle_csd() {
 		echo "csd     - $GITDIR/csdisco"
 		echo " |- d   - $GITDIR/csdisco/disco-app"
 		echo " |- ad  - $GITDIR/csdisco/aws-deploy"
+		echo " |- ur  - $GITDIR/csdisco/utility-regex"
+		echo " |- rs  - $GITDIR/csdisco/redaction-service"
+		echo " |- mt  - $GITDIR/csdisco/microservice-template"
 		return
 	fi
 
@@ -28,6 +31,15 @@ handle_csd() {
 	elif [ "$1" = "ad" ]
 	then
 		cd $GITDIR/csdisco/aws-deploy
+	elif [ "$1" = "ur" ]
+	then
+		cd $GITDIR/csdisco/utility-regex
+	elif [ "$1" = "rs" ]
+	then
+		cd $GITDIR/csdisco/redaction-service
+	elif [ "$1" = "mt" ]
+	then
+		cd $GITDIR/csdisco/microservice-template
 	else
 		cd "$1"
 	fi
