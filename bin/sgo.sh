@@ -27,3 +27,5 @@ git config --global core.editor vim
 git config --global user.name "Brian Hyams"
 git config --global alias.lod "log --oneline --decorate"
 git config --global alias.lodg "log --oneline --decorate --graph"
+git config --global alias.d "diff"
+git config --global alias.ds "diff --staged"
