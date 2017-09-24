@@ -28,6 +28,7 @@ function c() {
 		echo "um    - $GITDIR/umbelmania"
 		echo "mws   - $GITDIR/mnist-web-service"
 		echo "es    - $GITDIR/env-setup"
+		echo "cyn   - $GITDIR/cynch"
 		echo ""
 		echo "v-ft  - /usr/share/vim/vim74/ftplugin"
 		echo ""
@@ -63,6 +64,9 @@ function c() {
 	elif [ "$1" = "es" ]
 	then
 		cd $GITDIR/env-setup
+	elif [ "$1" = "cyn" ]
+	then
+		cd $GITDIR/cynch
 	elif [ "$1" = "v-ft" ]
 	then
 		cd /usr/share/vim/vim74/ftplugin
