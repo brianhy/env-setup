@@ -30,35 +30,57 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [ "x${GITDIR}" = "x" ]; then
-
-echo "Need to specify GITDIR"
-exit
-
+    echo "Need to specify GITDIR"
+    exit
 fi
 
 if [ "x${MODE}" = "xdisco" ]; then
-
     CDIR="\${GITDIR}/env-setup/scr/c-work-disco.sh"
-
     mkdir -p ${GITDIR}/csdisco
-
+else
+    CDIR="\${GITDIR}/env-setup/scr/c-home.sh"
 fi
+
+#
+# Figure out OS
+#
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     OS=Linux;;
+    Darwin*)    OS=Mac;;
+    CYGWIN*)    OS=Cygwin;;
+    MINGW*)     OS=MinGw;;
+    *)          OS="UNKNOWN:${unameOut}"
+esac
+echo ""
+echo "Running on a ${OS} . . ."
+echo ""
+
+# export gitdir so processes launched below can see the
+# value
+#
+export GITDIR=${GITDIR}
 
 #
 # BASH SETTINGS
 #
 echo "Setup Bash Settings"
 
+if [ "x${OS}" = "xMac" ]; then
+    BASHRCLEAFNAME="bash_profile"
+else
+    BASHRCLEAFNAME="bashrc"
+fi
+
 # Create .bashrc file that points to env-setup's bashrc
-if [ ! -f ~/.bashrc ]; then
+if [ ! -f "~/.${BASHRCLEAFNAME}" ]; then
     BASHRCTEXT="# Setup GITDIR\nexport GITDIR=$GITDIR\n\n. \"\${GITDIR}/env-setup/cf/bashrc\""
 
     if [ "x${CDIR}" != "x" ]; then
         BASHRCTEXT="${BASHRCTEXT}\n. \"${CDIR}\""
     fi
 
-echo -e "${BASHRCTEXT}" > ~/.bashrc 
-
+    echo -e "${BASHRCTEXT}" > ~/.${BASHRCLEAFNAME}
 fi
 
 #
