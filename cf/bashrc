@@ -60,14 +60,6 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -75,7 +67,6 @@ if [ -x /usr/bin/dircolors ]; then
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
  
-    alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
@@ -116,8 +107,11 @@ parse_git_branch() {
 export PS1='\n\[\e[1;33m\][\D{%T %b %d}]\[\e[1;37m\] \u@\h\n\w \[\e[1;92m\]$(parse_git_branch)\[\e[1;0m\]'$' \$\n'
 export PATH=~/bin:$PATH
 export INPUTRC=$GITDIR/env-setup/cf/inputrc # Point readline settings file to one in env-setup
-export GREP_OPTIONS='--color=auto -n'
 export GREP_COLORS='fn=1;35;40:mt=1;33;40'
+alias grep='grep --color=auto -n'
+alias ggrep='ggrep --color=auto -n'
 
 # Source any files that can run on all systems
 . $GITDIR/env-setup/scr/mod_prompt_title.sh
+
+source ~/.completions/git-completions.bash
