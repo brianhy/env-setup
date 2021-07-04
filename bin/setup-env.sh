@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #
 # setupEnv.sh
 #
@@ -5,131 +7,100 @@
 # shell scripts and executes them.
 #
 
-POSITIONAL=()
-while [[ $# -gt 0 ]]
-do
-key="$1"
-
-case $key in
-    -g|--gitdir)
-    GITDIR="$2"
-    shift # past argument
-    shift # past value
-    ;;
-	-m|--mode)
-	MODE="$2"
-	shift # past argument
-	shift # past value
-	;;
-	*)    # unknown option
-    POSITIONAL+=("$1") # save it in an array for later
-    shift # past argument
-    ;;
-esac
-done
-set -- "${POSITIONAL[@]}" # restore positional parameters
-
-if [ "x${GITDIR}" = "x" ]; then
-    echo "Need to specify GITDIR"
-    exit
+targetShell="${1:-bash}"
+if [ "${targetShell}" != "zsh" ] && [ "${targetShell}" != "bash" ]; then
+    echo "Unknown target shell '${targetShell}'"
+    exit 42
 fi
 
-if [ "x${MODE}" = "xdisco" ]; then
-    CDIR="\${GITDIR}/env-setup/scr/c-work-disco.sh"
-    mkdir -p ${GITDIR}/csdisco
-else
-    CDIR="\${GITDIR}/env-setup/scr/c-home.sh"
+echo "Target Shell = ${targetShell}"
+
+psCurrentShellOutput=$(ps -p$$ -ocommand=)
+
+# Directory where all scripts for setup are found
+if [[ "${psCurrentShellOutput}" == bash* ]]; then
+    currentShell="bash"
+elif [[ "${psCurrentShellOutput}" == zsh* ]]; then
+    currentShell="zsh"
 fi
 
+echo "Current Shell = ${currentShell}"
+
+if [ "${currentShell}" = "bash"  ]; then
+    SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+elif [ "${currentShell}" = "zsh" ]; then
+    SCRIPTDIR="$( cd "$( dirname "${0:A}" )" && pwd)"
+fi
+
+echo "Script Dir = ${SCRIPTDIR}"
+
+echo "GITDIR= "
+read GITDIR_IN
+export GITDIR=${GITDIR_IN}
+
+bash ${SCRIPTDIR}/svo.sh # Setup VIM settings
+bash ${SCRIPTDIR}/sgo.sh # Setup git settings
+
 #
-# Figure out OS
+# Install tools
 #
-unameOut="$(uname -s)"
 case "${unameOut}" in
-    Linux*)     OS=Linux;;
-    Darwin*)    OS=Mac;;
-    CYGWIN*)    OS=Cygwin;;
-    MINGW*)     OS=MinGw;;
-    *)          OS="UNKNOWN:${unameOut}"
+    Linux*)    bash ${SCRIPTDIR}/linux_installTools.sh;;
+    Darwin*)   bash ${SCRIPTDIR}/mac_installTools.sh;;
+    *)         echo "Unknown Machine ${unameOut}"
 esac
-echo ""
-echo "Running on a ${OS} . . ."
-echo ""
 
-# export gitdir so processes launched below can see the
-# value
-#
-export GITDIR=${GITDIR}
 
-#
-# BASH SETTINGS
-#
-echo "Setup Bash Settings"
-
-if [ "x${OS}" = "xMac" ]; then
-    BASHRCLEAFNAME="bash_profile"
-else
-    BASHRCLEAFNAME="bashrc"
-fi
-
-# Create .bashrc file that points to env-setup's bashrc
-if [ ! -f "~/.${BASHRCLEAFNAME}" ]; then
-    BASHRCTEXT="# Setup GITDIR\nexport GITDIR=$GITDIR\n\n. \"\${GITDIR}/env-setup/cf/bashrc\""
-
-    if [ "x${CDIR}" != "x" ]; then
-        BASHRCTEXT="${BASHRCTEXT}\n. \"${CDIR}\""
-    fi
-
-    echo -e "${BASHRCTEXT}" > ~/.${BASHRCLEAFNAME}
+# Setup completions
+if [ "${targetShell}" = "bash" ]; then
+    mkdir ~/.completions
+    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.completions/git-completions.bash
 fi
 
 #
-# VIM SETTINGS
+# ZSH
 #
-echo "Setup VIM Settings"
-
-# Create .vimrc file that points to env-setup's vimrc
-if [ ! -f ~/.vimrc ]; then
-
-cat >~/.vimrc <<EOL
-"
-" Source the vimrc stashed in git
-"
-source \$GITDIR/env-setup/cf/vimrc
-EOL
-
+if [ "${targetShell}" = "zsh" ]; then
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-# Install plug-in manager
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+echo "GITSSH_KEY= "
+read GITSSH_KEY_IN
 
-# Install plug-ins
-vim +PlugInstall +qall
-
+GITSSH=""
+if [ "$GITSSH_KEY_IN" != "" ]; then
+    read -r -d '' GITSSH << EOM
 #
-# Setup git options
+# setup git ssh
 #
-
-# Execute basic git command to check existence
-git --version 2>&1 >/dev/null
-GIT_VERSION_EXIT_CODE=$?
-
-if [ $GIT_VERSION_EXIT_CODE -ne 0 ]
-    then
-        echo "NO GIT INSTALLED"
-        exit 1
+eval "\$(ssh-agent -s)" 1>/dev/null
+ssh-add ~/.ssh/${GITSSH_KEY_IN} &>/dev/null
+EOM
 fi
 
-# If we're here, then git does indeed exist.  Let's start configuring.
+if [ "${targetShell}" = "bash" ]; then
+    profileFileName=".bash_profile"
+    rcFile="bashrc"
+elif [ "${targetShell}" = "zsh" ]; then
+    profileFileName=".zshrc.personal"
+    rcFile="zshrc"
+fi
+
+cat > ~/"${profileFileName}" << EOM
+export GITDIR=${GITDIR_IN}
 
 #
-# Git config options
+# Source bash file from git
 #
+. "\${GITDIR}/p/env-setup/cf/${rcFile}"
 
-# Set default options for all projects
-git config --global core.editor vim
-git config --global user.name "Brian Hyams"
-git config --global alias.lod "log --oneline --decorate"
-git config --global alias.lodg "log --oneline --decorate --graph"
-git config --global alias.d "diff"
-git config --global alias.ds "diff --staged"
+#
+# PYENV
+#
+export PATH="${PATH}:~/.pyenv/bin"
+eval "\$(pyenv init -)"
+
+${GITSSH}
+
+EOM
+
