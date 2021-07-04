@@ -40,7 +40,6 @@ export GITDIR=${GITDIR_IN}
 
 bash ${SCRIPTDIR}/svo.sh # Setup VIM settings
 bash ${SCRIPTDIR}/sgo.sh # Setup git settings
-bash ${SCRIPTDIR}/installPyenv.sh
 
 #
 # Install tools
