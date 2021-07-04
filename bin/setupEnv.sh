@@ -7,8 +7,32 @@
 # shell scripts and executes them.
 #
 
+targetShell="${1:-bash}"
+if [ "${targetShell}" != "zsh" ] && [ "${targetShell}" != "bash" ]; then
+    echo "Unknown target shell '${targetShell}'"
+    exit 42
+fi
+
+echo "Target Shell = ${targetShell}"
+
+psCurrentShellOutput=$(ps -p$$ -ocommand=)
+
 # Directory where all scripts for setup are found
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+if [[ "${psCurrentShellOutput}" == bash* ]]; then
+    currentShell="bash"
+elif [[ "${psCurrentShellOutput}" == zsh* ]]; then
+    currentShell="zsh"
+fi
+
+echo "Current Shell = ${currentShell}"
+
+if [ "${currentShell}" = "bash"  ]; then
+    SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+elif [ "${currentShell}" = "zsh" ]; then
+    SCRIPTDIR="$( cd "$( dirname "${0:A}" )" && pwd)"
+fi
+
+echo "Script Dir = ${SCRIPTDIR}"
 
 echo "GITDIR= "
 read GITDIR_IN
@@ -21,16 +45,25 @@ bash ${SCRIPTDIR}/installPyenv.sh
 #
 # Install tools
 #
-unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)    bash ${SCRIPTDIR}/linux_installTools.sh;;
     Darwin*)   bash ${SCRIPTDIR}/mac_installTools.sh;;
     *)         echo "Unknown Machine ${unameOut}"
 esac
 
+
 # Setup completions
-mkdir ~/.completions
-curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.completions/git-completions.bash
+if [ "${targetShell}" = "bash" ]; then
+    mkdir ~/.completions
+    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.completions/git-completions.bash
+fi
+
+#
+# ZSH
+#
+if [ "${targetShell}" = "zsh" ]; then
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
 echo "GITSSH_KEY= "
 read GITSSH_KEY_IN
@@ -46,13 +79,21 @@ ssh-add ~/.ssh/${GITSSH_KEY_IN} &>/dev/null
 EOM
 fi
 
-cat > ~/.bash_profile << EOM
+if [ "${targetShell}" = "bash" ]; then
+    profileFileName=".bash_profile"
+    rcFile="bashrc"
+elif [ "${targetShell}" = "zsh" ]; then
+    profileFileName=".zprofile"
+    rcFile="zshrc"
+fi
+
+cat > ~/"${profileFileName}" << EOM
 export GITDIR=${GITDIR_IN}
 
 #
 # Source bash file from git
 #
-. "\${GITDIR}/env-setup/cf/bashrc"
+. "\${GITDIR}/p/env-setup/cf/${rcFile}"
 
 #
 # PYENV
