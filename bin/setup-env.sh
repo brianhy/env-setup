@@ -82,7 +82,7 @@ if [ "${targetShell}" = "bash" ]; then
     profileFileName=".bash_profile"
     rcFile="bashrc"
 elif [ "${targetShell}" = "zsh" ]; then
-    profileFileName=".zprofile"
+    profileFileName=".zshrc.personal"
     rcFile="zshrc"
 fi
 
