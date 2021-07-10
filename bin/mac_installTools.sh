@@ -6,6 +6,9 @@ echo "Installing homebrew..."
 echo "Installing pyenv..."
 brew install pyenv
 
+echo "Installing pipenv..."
+brew install pipenv
+
 echo "Installing tree..."
 brew install tree
 
