@@ -18,9 +18,9 @@ echo "Target Shell = ${targetShell}"
 psCurrentShellOutput=$(ps -p$$ -ocommand=)
 
 # Directory where all scripts for setup are found
-if [[ "${psCurrentShellOutput}" == bash* ]]; then
+if [[ "${psCurrentShellOutput}" == *bash* ]]; then
     currentShell="bash"
-elif [[ "${psCurrentShellOutput}" == zsh* ]]; then
+elif [[ "${psCurrentShellOutput}" == *zsh* ]]; then
     currentShell="zsh"
 fi
 
@@ -103,4 +103,18 @@ eval "\$(pyenv init -)"
 ${GITSSH}
 
 EOM
+
+#
+# Append sourcing to .zshrc if target shell is zsh
+#
+if [ "${targetShell}" = "zsh" ]; then
+    cat >> ~/.zshrc << EOM
+
+#
+# Personal Zshrc
+#
+. ~/.zshrc.personal
+
+EOM
+fi
 
