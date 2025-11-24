@@ -18,9 +18,9 @@ echo "Target Shell = ${targetShell}"
 psCurrentShellOutput=$(ps -p$$ -ocommand=)
 
 # Directory where all scripts for setup are found
-if [[ "${psCurrentShellOutput}" == bash* ]]; then
+if [[ "${psCurrentShellOutput}" == *bash* ]]; then
     currentShell="bash"
-elif [[ "${psCurrentShellOutput}" == zsh* ]]; then
+elif [[ "${psCurrentShellOutput}" == *zsh* ]]; then
     currentShell="zsh"
 fi
 
