@@ -104,3 +104,17 @@ ${GITSSH}
 
 EOM
 
+#
+# Append sourcing to .zshrc if target shell is zsh
+#
+if [ "${targetShell}" = "zsh" ]; then
+    cat >> ~/.zshrc << EOM
+
+#
+# Personal Zshrc
+#
+. ~/.zshrc.personal
+
+EOM
+fi
+
